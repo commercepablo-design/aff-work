@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Media Jobs Quiz</title>
+  <meta name="description" content="Квиз-лендинг для набора в команду" />
+  
+  <style>
+    :root {
+      --bg: #050505;
+      --bg-2: #0d0d0d;
+      --card: rgba(10, 10, 10, 0.94);
+      --card-2: rgba(255, 255, 255, 0.04);
+      --text: #f6f4f1;
+      --muted: #b6b0aa;
+      --line: rgba(255,255,255,0.12);
+      --line-2: rgba(255,255,255,0.08);
+      --accent: #ff2c2c;
+      --accent-2: #ffcc21;
+      --accent-3: #ffffff;
+      --danger: #ef4444;
+      --shadow: 0 24px 80px rgba(0,0,0,0.48);
+      --radius: 28px;
+      --radius-sm: 18px;
+      --container: 1240px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255, 64, 64, 0.22), transparent 26%),
+        radial-gradient(circle at 86% 12%, rgba(255, 190, 190, 0.18), transparent 20%),
+        radial-gradient(circle at 84% 84%, rgba(255, 117, 24, 0.18), transparent 20%),
+        linear-gradient(180deg, #090909 0%, #040404 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(115deg, rgba(255,255,255,0.015) 0%, transparent 35%),
+        repeating-linear-gradient(
+          0deg,
+          rgba(255,255,255,0.02) 0px,
+          rgba(255,255,255,0.02) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+      opacity: 0.32;
+      mix-blend-mode: screen;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+
+    .container {
+      width: min(var(--container), calc(100% - 28px));
+      margin: 0 auto;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 20px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(360px, 0.82fr);
+      gap: 20px;
+      width: 100%;
+      align-items: stretch;
+    }
+
+    .hero, .quiz-shell {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.035), transparent 24%),
+        linear-gradient(180deg, rgba(255,50,50,0.08), transparent 35%),
+        var(--card);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .hero::before,
+    .quiz-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 78% 20%, rgba(255,255,255,0.07), transparent 18%),
+        radial-gradient(circle at 85% 68%, rgba(255,118,39,0.14), transparent 22%),
+        linear-gradient(90deg, transparent, rgba(255,255,255,0.02), transparent);
+      opacity: 0.95;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      left: -8%;
+      bottom: 12%;
+      width: 62%;
+      height: 34%;
+      background: radial-gradient(circle at center, rgba(255,90,20,0.18), transparent 68%);
+      filter: blur(30px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero {
+      min-height: 760px;
+      padding: 26px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #1b1b1b, #080808);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .status {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #f1ece5;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-body {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 290px;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100%;
+    }
+
+    .eyebrow {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 58px;
+      padding: 12px 26px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #ff2626, #cf1010);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.9);
+      box-shadow: 0 14px 36px rgba(207,16,16,0.34);
+      font-size: 20px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      transform: rotate(-2.6deg);
+      margin: 8px 0 18px 6px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: clamp(74px, 9vw, 132px);
+      line-height: 0.86;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow:
+        -2px -2px 0 rgba(0,0,0,0.95),
+         2px -2px 0 rgba(0,0,0,0.95),
+        -2px  2px 0 rgba(0,0,0,0.95),
+         2px  2px 0 rgba(0,0,0,0.95),
+         0 12px 34px rgba(0,0,0,0.42);
+      max-width: 760px;
+    }
+
+    .hero-copy-main {
+      max-width: 760px;
+    }
+
+    .hero-copy-main .line-break {
+      display: block;
+    }
+
+    .lead {
+      margin: 18px 0 0;
+      max-width: 620px;
+      font-size: 20px;
+      line-height: 1.28;
+      color: #f4f0eb;
+    }
+
+    .lead strong {
+      color: var(--accent-2);
+      font-weight: 800;
+    }
+
+    .hero-stage {
+      margin-top: 22px;
+      min-height: 250px;
+      display: flex;
+      align-items: end;
+      position: relative;
+    }
+
+    .hero-illustration {
+      position: relative;
+      width: min(100%, 540px);
+      aspect-ratio: 1 / 0.88;
+      border-radius: 40px;
+      background:
+        radial-gradient(circle at 50% 25%, rgba(255,248,233,0.18), transparent 22%),
+        radial-gradient(circle at 50% 34%, rgba(255,197,145,0.16), transparent 24%),
+        radial-gradient(circle at 50% 70%, rgba(255,150,77,0.18), transparent 22%),
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)),
+        linear-gradient(180deg, #17110d 0%, #0b0908 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 30px 60px rgba(0,0,0,0.38);
+      overflow: hidden;
+    }
+
+    .hero-illustration::before {
+      content: "₿";
+      position: absolute;
+      left: 16px;
+      bottom: 26px;
+      font-size: 56px;
+      font-weight: 900;
+      color: rgba(255,198,86,0.68);
+      text-shadow: 0 12px 24px rgba(0,0,0,0.35);
+      transform: rotate(-14deg);
+    }
+
+    .hero-illustration::after {
+      content: "$";
+      position: absolute;
+      right: 22px;
+      top: 18px;
+      font-size: 44px;
+      font-weight: 900;
+      color: rgba(255,255,255,0.25);
+      transform: rotate(10deg);
+    }
+
+    .avatar-head {
+      position: absolute;
+      left: 50%;
+      top: 18%;
+      transform: translateX(-50%);
+      width: 68%;
+      height: 70%;
+      border-radius: 42% 42% 45% 45% / 34% 34% 52% 52%;
+      background:
+        radial-gradient(circle at 50% 26%, #ffe8d6 0%, #f7cdb2 42%, #d89e79 68%, #885436 100%);
+      box-shadow:
+        inset 0 -18px 26px rgba(0,0,0,0.18),
+        0 24px 34px rgba(0,0,0,0.28);
+    }
+
+    .avatar-cap {
+      position: absolute;
+      left: 50%;
+      top: 10%;
+      transform: translateX(-50%);
+      width: 74%;
+      height: 34%;
+      border-radius: 50% 50% 28% 28%;
+      background: linear-gradient(180deg, #1f1f1f, #070707);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+
+    .avatar-cap::after {
+      content: "";
+      position: absolute;
+      right: 12%;
+      top: 52%;
+      width: 34%;
+      height: 18%;
+      border-radius: 999px;
+      background: #151515;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .avatar-glasses {
+      position: absolute;
+      left: 50%;
+      top: 35%;
+      transform: translateX(-50%);
+      width: 72%;
+      height: 14%;
+      display: flex;
+      gap: 6%;
+    }
+
+    .avatar-glasses span {
+      flex: 1;
+      background: linear-gradient(180deg, #080808, #010101);
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .avatar-glasses::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 44%;
+      transform: translate(-50%, -50%);
+      width: 14%;
+      height: 10%;
+      background: #0a0a0a;
+      border-radius: 999px;
+    }
+
+    .avatar-mouth {
+      position: absolute;
+      left: 50%;
+      bottom: 18%;
+      transform: translateX(-50%);
+      width: 56%;
+      height: 22%;
+      border-radius: 0 0 42px 42px;
+      background: linear-gradient(180deg, #120f10, #060505);
+      box-shadow: inset 0 10px 20px rgba(255,255,255,0.04);
+    }
+
+    .avatar-grill {
+      position: absolute;
+      left: 50%;
+      bottom: 26%;
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      width: 54%;
+    }
+
+    .avatar-grill span {
+      height: 28px;
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.65), transparent 30%),
+        linear-gradient(180deg, #fff7dd, #c1a25e);
+      border: 1px solid rgba(255,255,255,0.34);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+    }
+
+    .hero-side {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-self: stretch;
+    }
+
+    .logo-pill {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(17,17,17,0.96), rgba(4,4,4,0.98));
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 12px 28px rgba(0,0,0,0.25);
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .logo-pill.small {
+      font-size: 18px;
+    }
+
+    .hero-bottom {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 18px;
+      align-items: center;
+      padding: 22px 24px;
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.05), transparent),
+        rgba(7,7,7,0.95);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    .tg-badge {
+      width: 92px;
+      height: 92px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.14);
+      display: grid;
+      place-items: center;
+      font-size: 44px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    }
+
+    .hero-bottom-copy {
+      font-size: clamp(24px, 2.4vw, 36px);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+    }
+
+    .hero-bottom-copy strong {
+      color: var(--accent);
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      transition: 0.2s ease;
+      border-radius: 18px;
+      font-weight: 800;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      padding: 0 24px;
+      min-height: 58px;
+      white-space: nowrap;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      color: #fff;
+      background: linear-gradient(180deg, #ff3535, #c20f0f);
+      box-shadow: 0 16px 36px rgba(194,15,15,0.32);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .btn-secondary {
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .quiz-shell {
+      padding: 18px;
+      display: flex;
+      align-items: stretch;
+      min-height: 760px;
+    }
+
+    .quiz-card {
+      width: 100%;
+      border-radius: 24px;
+      padding: 28px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.04), transparent 26%),
+        linear-gradient(180deg, rgba(255,36,36,0.06), transparent 30%),
+        rgba(8, 8, 8, 0.94);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+      position: relative;
+    }
+
+    .progress-head { margin-bottom: 26px; }
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: #f2ede7;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 16%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ff4b4b, #ff1f1f);
+      box-shadow: 0 0 20px rgba(255,31,31,0.4);
+      transition: width 0.25s ease;
+    }
+
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+
+    .question {
+      margin: 0 0 12px;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      text-transform: uppercase;
+      font-size: clamp(40px, 3.8vw, 62px);
+      line-height: 0.92;
+      letter-spacing: 0.01em;
+      color: #fff;
+      text-shadow:
+        -1px -1px 0 rgba(0,0,0,0.95),
+         1px -1px 0 rgba(0,0,0,0.95),
+        -1px  1px 0 rgba(0,0,0,0.95),
+         1px  1px 0 rgba(0,0,0,0.95);
+    }
+
+    .desc {
+      margin: 0 0 24px;
+      font-size: 16px;
+      line-height: 1.58;
+      color: var(--muted);
+      max-width: 560px;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .choice-btn {
+      min-height: 72px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(15,15,15,0.98), rgba(4,4,4,1));
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .choice-btn:hover,
+    .choice-btn.is-active {
+      border-color: rgba(255, 44, 44, 0.6);
+      box-shadow: 0 12px 26px rgba(255,44,44,0.16);
+    }
+
+    .input-wrap { margin-bottom: 16px; }
+    .label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: #f2ede7;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .input {
+      width: 100%;
+      min-height: 62px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 0 18px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .input::placeholder { color: rgba(255,255,255,0.34); }
+
+    .input:focus {
+      border-color: rgba(255, 44, 44, 0.62);
+      box-shadow: 0 0 0 4px rgba(255,44,44,0.12);
+    }
+
+    .error {
+      display: none;
+      color: #ff7b7b;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .error.show { display: block; }
+
+    .nav {
+      margin-top: 22px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .ghost-link {
+      appearance: none;
+      background: transparent;
+      border: 0;
+      color: #e7dfd7;
+      cursor: pointer;
+      padding: 10px 0;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .ghost-link:hover { color: #fff; }
+
+    .state-screen {
+      min-height: 560px;
+      display: grid;
+      place-items: center;
+      padding: 12px 0;
+    }
+
+    .state-box {
+      max-width: 580px;
+      text-align: center;
+      padding: 24px 8px;
+    }
+
+    .state-icon {
+      width: 108px;
+      height: 108px;
+      margin: 0 auto 24px;
+      border-radius: 28px;
+      display: grid;
+      place-items: center;
+      font-size: 46px;
+      font-weight: 900;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .state-icon.reject {
+      background: linear-gradient(180deg, rgba(255,75,75,0.18), rgba(255,75,75,0.08));
+      color: #ff8a8a;
+    }
+
+    .state-icon.success {
+      background: linear-gradient(180deg, rgba(255,44,44,0.22), rgba(255,44,44,0.08));
+      color: #fff;
+    }
+
+    .state-title {
+      margin: 0 0 16px;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      text-transform: uppercase;
+      font-size: clamp(44px, 4.2vw, 72px);
+      line-height: 0.92;
+      color: #fff;
+      text-shadow:
+        -1px -1px 0 rgba(0,0,0,0.95),
+         1px -1px 0 rgba(0,0,0,0.95),
+        -1px  1px 0 rgba(0,0,0,0.95),
+         1px  1px 0 rgba(0,0,0,0.95);
+    }
+
+    .state-text {
+      margin: 0 auto;
+      max-width: 520px;
+      font-size: 18px;
+      line-height: 1.52;
+      color: var(--muted);
+    }
+
+    .state-actions {
+      margin-top: 26px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .answers-preview {
+      margin: 26px auto 0;
+      max-width: 520px;
+      text-align: left;
+      padding: 20px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .answers-preview h4 {
+      margin: 0 0 14px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #f2ede7;
+    }
+
+    .answers-preview ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.64;
+    }
+
+    .answers-preview li + li { margin-top: 8px; }
+
+    @media (max-width: 1080px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero,
+      .quiz-shell {
+        min-height: auto;
+      }
+
+      .hero-body {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-side {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-bottom {
+        grid-template-columns: auto 1fr;
+      }
+
+      .hero-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .container { width: min(var(--container), calc(100% - 16px)); }
+      .page { padding: 10px 0; }
+      .hero, .quiz-shell { border-radius: 22px; }
+      .hero { padding: 16px; gap: 14px; min-height: auto; }
+      .quiz-shell { padding: 10px; }
+      .quiz-card { padding: 18px; border-radius: 20px; }
+      .topbar { margin-bottom: 0; }
+      .status { display: none; }
+      .eyebrow {
+        min-height: 48px;
+        padding: 10px 16px;
+        font-size: 14px;
+        border-radius: 12px;
+        margin-left: 2px;
+      }
+      h1 { font-size: clamp(54px, 21vw, 84px); }
+      .lead { font-size: 16px; margin-top: 14px; }
+      .hero-stage { min-height: 190px; margin-top: 16px; }
+      .hero-side {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .logo-pill {
+        min-height: 62px;
+        padding: 12px;
+        font-size: 15px;
+        border-radius: 16px;
+      }
+      .hero-bottom {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 18px;
+      }
+      .tg-badge {
+        width: 74px;
+        height: 74px;
+        margin: 0 auto;
+        font-size: 36px;
+      }
+      .hero-bottom-copy { font-size: 22px; }
+      .hero-actions { justify-content: center; }
+      .btn { width: 100%; min-height: 54px; }
+      .choice-grid { grid-template-columns: 1fr; }
+      .question { font-size: clamp(34px, 12vw, 54px); }
+      .nav { flex-direction: column; align-items: stretch; }
+      .nav-right { width: 100%; }
+      .state-screen { min-height: 460px; }
+      .state-actions { flex-direction: column; }
+      .state-actions .btn { width: 100%; }
+    }
+  </style>
+
+</head>
+<body>
+  <main class="page">
+    <div class="container">
+      <div class="grid">
+        
+        <section class="hero">
+          <div class="topbar">
+            <div class="brand">
+              <span class="brand-badge">M</span>
+              <span>Media</span>
+            </div>
+            <div class="status">Recruiting • Crypto</div>
+          </div>
+
+          <div class="hero-body">
+            <div class="hero-copy">
+              <div class="hero-copy-main">
+                <div class="eyebrow">В крипто-вертикали</div>
+                <h1>
+                  <span class="line-break">Монетизируй</span>
+                  <span class="line-break">свой опыт</span>
+                </h1>
+                <p class="lead">
+                  Работал в affiliate или crypto? <strong>Пора выйти на следующий уровень.</strong>
+                  Пройди короткий опрос и покажи свой реальный опыт.
+                </p>
+
+                <div class="hero-stage" aria-hidden="true">
+                  <div class="hero-illustration">
+                    <div class="avatar-cap"></div>
+                    <div class="avatar-head"></div>
+                    <div class="avatar-glasses"><span></span><span></span></div>
+                    <div class="avatar-mouth"></div>
+                    <div class="avatar-grill">
+                      <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-side">
+              <div class="logo-pill">AIVIX</div>
+              <div class="logo-pill">CAPITAL LEADS</div>
+              <div class="logo-pill">AXELA</div>
+              <div class="logo-pill">CRYP.IM</div>
+              <div class="logo-pill small">PROFIT PIXELS</div>
+              <div class="logo-pill">MOONSTAR</div>
+              <div class="logo-pill small">TRUMP YOUR ADS</div>
+              <div class="logo-pill">OPENAFF</div>
+            </div>
+          </div>
+
+          <div class="hero-bottom">
+            <div class="tg-badge">✈</div>
+            <div class="hero-bottom-copy">
+              <strong>Присоединяйся к команде,</strong> которая оценит твои навыки по достоинству
+            </div>
+            <div class="hero-actions">
+              <a href="#quiz" class="btn btn-primary" id="heroStartBtn">Пройти опрос</a>
+            </div>
+          </div>
+        </section>
+
+
+        <section class="quiz-shell" id="quiz">
+          <div class="quiz-card" id="quizCard">
+            <div>
+              <div class="progress-head" id="progressHead">
+                <div class="progress-top">
+                  <span id="progressText">Шаг 1 из 6</span>
+                  <span id="progressPercent">17%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="progressFill"></div>
+                </div>
+              </div>
+
+              <div class="step-panel active" data-step="1">
+                <h2 class="question">Есть ли опыт в сфере Affiliate Marketing?</h2>
+                <p class="desc">Нам важен практический опыт. От этого зависит дальнейшая ветка квиза.</p>
+                <div class="choice-grid">
+                  <button class="btn choice-btn" data-answer="experience" data-value="Да">Да</button>
+                  <button class="btn choice-btn" data-answer="experience" data-value="Нет">Нет</button>
+                </div>
+              </div>
+
+              <div class="step-panel" data-step="2-crypto">
+                <h2 class="question">Есть ли опыт в Crypto вертикали?</h2>
+                <p class="desc">Если опыта в Crypto нет, покажем следующий вопрос про вертикаль, с которой ты уже работал(а).</p>
+                <div class="choice-grid">
+                  <button class="btn choice-btn" data-answer="cryptoExperience" data-value="Да">Да</button>
+                  <button class="btn choice-btn" data-answer="cryptoExperience" data-value="Нет">Нет</button>
+                </div>
+                <div class="nav">
+                  <button class="ghost-link" data-back="1">← Назад</button>
+                </div>
+              </div>
+
+              <div class="step-panel" data-step="2-vertical">
+                <h2 class="question">В какой вертикали есть опыт?</h2>
+                <p class="desc">Укажи основную вертикаль, с которой работал(а) в affiliate marketing.</p>
+                <div class="input-wrap">
+                  <label class="label" for="verticalInput">Вертикаль</label>
+                  <input class="input" id="verticalInput" type="text" placeholder="Например: iGaming, Nutra, Crypto, Sweepstakes" />
+                  <div class="error" id="verticalError">Это поле обязательно</div>
+                </div>
+                <div class="nav">
+                  <button class="ghost-link" data-back="2-crypto">← Назад</button>
+                  <div class="nav-right">
+                    <button class="btn btn-primary" id="verticalNextBtn">Далее</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-panel" data-step="3">
+                <h2 class="question">На какой позиции работал(а) до этого?</h2>
+                <p class="desc">Например: media buyer, affiliate manager, farmer, team lead.</p>
+                <div class="input-wrap">
+                  <label class="label" for="positionInput">Позиция</label>
+                  <input class="input" id="positionInput" type="text" placeholder="Введите позицию" />
+                  <div class="error" id="positionError">Это поле обязательно</div>
+                </div>
+                <div class="nav">
+                  <button class="ghost-link" id="step3BackBtn">← Назад</button>
+                  <div class="nav-right">
+                    <button class="btn btn-primary" id="positionNextBtn">Далее</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-panel" data-step="4">
+                <h2 class="question">В какой компании работал(а) до этого?</h2>
+                <p class="desc">Можно указать компанию, команду или коротко описать последнее место работы.</p>
+                <div class="input-wrap">
+                  <label class="label" for="companyInput">Компания</label>
+                  <input class="input" id="companyInput" type="text" placeholder="Введите название компании" />
+                  <div class="error" id="companyError">Это поле обязательно</div>
+                </div>
+                <div class="nav">
+                  <button class="ghost-link" data-back="3">← Назад</button>
+                  <div class="nav-right">
+                    <button class="btn btn-primary" id="companyNextBtn">Далее</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-panel" data-step="5">
+                <h2 class="question">Укажи свой Telegram для связи</h2>
+                <p class="desc">Формат лучше указывать как `@username`, но можно и ссылкой `https://t.me/username`.</p>
+                <div class="input-wrap">
+                  <label class="label" for="telegramInput">Telegram</label>
+                  <input class="input" id="telegramInput" type="text" placeholder="@yourusername" />
+                  <div class="error" id="telegramError">Укажи корректный Telegram</div>
+                </div>
+                <div class="nav">
+                  <button class="ghost-link" data-back="4">← Назад</button>
+                  <div class="nav-right">
+                    <button class="btn btn-primary" id="submitBtn">Отправить</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-panel" data-step="reject">
+                <div class="state-screen">
+                  <div class="state-box">
+                    <div class="state-icon reject">!</div>
+                    <h2 class="state-title">К сожалению...</h2>
+                    <p class="state-text">
+                      В данный момент мы не набираем ребят без опыта в Affiliate Marketing.
+                      Но это не значит, что двери закрыты навсегда.
+                    </p>
+                    <div class="state-actions">
+                      <a class="btn btn-primary" href="https://t.me/Helmut_Bakaitis" target="_blank" rel="noopener noreferrer">Написать напрямую</a>
+                      <button class="btn btn-secondary" id="restartRejectBtn">Пройти заново</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-panel" data-step="success">
+                <div class="state-screen">
+                  <div class="state-box">
+                    <div class="state-icon success">✓</div>
+                    <h2 class="state-title">Спасибо за обращение!</h2>
+                    <p class="state-text">
+                      Мы свяжемся с тобой в ближайшее время. Ниже показаны ответы, которые были собраны с формы.
+                    </p>
+                    <div class="answers-preview" id="answersPreview">
+                      <h4>Ответы кандидата</h4>
+                      <ul id="answersList"></ul>
+                    </div>
+                    <div class="state-actions">
+                      <a class="btn btn-primary" href="https://t.me/Helmut_Bakaitis" id="telegramSuccessBtn" target="_blank" rel="noopener noreferrer">Написать в Telegram</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const state = {
+      current: '1',
+      answers: {
+        experience: '',
+        cryptoExperience: '',
+        vertical: '',
+        position: '',
+        company: '',
+        telegram: ''
+      },
+      routeAfterStep2: '3',
+      webhookUrl: ''
+    };
+
+    const stepOrder = ['1', '2', '3', '4', '5', '6'];
+    const panels = document.querySelectorAll('.step-panel');
+    const progressText = document.getElementById('progressText');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressFill = document.getElementById('progressFill');
+    const progressHead = document.getElementById('progressHead');
+    const quizCard = document.getElementById('quizCard');
+
+    const verticalInput = document.getElementById('verticalInput');
+    const positionInput = document.getElementById('positionInput');
+    const companyInput = document.getElementById('companyInput');
+    const telegramInput = document.getElementById('telegramInput');
+
+    const verticalError = document.getElementById('verticalError');
+    const positionError = document.getElementById('positionError');
+    const companyError = document.getElementById('companyError');
+    const telegramError = document.getElementById('telegramError');
+
+    const answersList = document.getElementById('answersList');
+
+    function setProgress(stepNumber, total = 6) {
+      const percent = Math.max(0, Math.min(100, Math.round((stepNumber / total) * 100)));
+      progressText.textContent = `Шаг ${stepNumber} из ${total}`;
+      progressPercent.textContent = `${percent}%`;
+      progressFill.style.width = `${percent}%`;
+      progressHead.style.display = 'block';
+    }
+
+    function hideProgress() {
+      progressHead.style.display = 'none';
+    }
+
+    function showStep(stepKey) {
+      state.current = stepKey;
+      panels.forEach(panel => panel.classList.toggle('active', panel.dataset.step === stepKey));
+
+      if (stepKey === '1') setProgress(1);
+      else if (stepKey === '2-crypto' || stepKey === '2-vertical') setProgress(2);
+      else if (stepKey === '3') setProgress(3);
+      else if (stepKey === '4') setProgress(4);
+      else if (stepKey === '5') setProgress(5);
+      else hideProgress();
+    }
+
+    function clearErrors() {
+      [verticalError, positionError, companyError, telegramError].forEach(el => el.classList.remove('show'));
+    }
+
+    function validateRequired(value) {
+      return value && value.trim().length > 0;
+    }
+
+    function normalizeTelegram(value) {
+      return value.trim();
+    }
+
+    function validateTelegram(value) {
+      const v = normalizeTelegram(value);
+      if (!v) return false;
+      if (/^@[A-Za-z0-9_]{4,32}$/.test(v)) return true;
+      if (/^https?:\/\/t\.me\/[A-Za-z0-9_]{4,32}\/?$/.test(v)) return true;
+      if (/^[A-Za-z0-9_]{4,32}$/.test(v)) return true;
+      return false;
+    }
+
+    function buildAnswersPreview() {
+      const cryptoOrVertical = state.answers.cryptoExperience === 'Да'
+        ? 'Crypto'
+        : state.answers.vertical || 'Не указано';
+
+      const rows = [
+        ['Опыт в Affiliate Marketing', state.answers.experience || 'Не указано'],
+        ['Опыт в Crypto', state.answers.cryptoExperience || 'Нет данных'],
+        ['Вертикаль', cryptoOrVertical],
+        ['Позиция', state.answers.position || 'Не указано'],
+        ['Компания', state.answers.company || 'Не указано'],
+        ['Telegram', state.answers.telegram || 'Не указано']
+      ];
+
+      answersList.innerHTML = rows.map(([label, value]) => `
+        <li>
+          <small>${label}</small>
+          <span>${escapeHtml(value)}</span>
+        </li>
+      `).join('');
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    async function submitForm() {
+      const payload = {
+        submittedAt: new Date().toISOString(),
+        ...state.answers,
+        vertical: state.answers.cryptoExperience === 'Да' ? 'Crypto' : state.answers.vertical
+      };
+
+      if (!state.webhookUrl) {
+        console.log('Quiz payload:', payload);
+        return { ok: true, skipped: true };
+      }
+
+      const response = await fetch(state.webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error('Ошибка отправки формы');
+      }
+
+      return response;
+    }
+
+    document.querySelectorAll('[data-answer="experience"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.answers.experience = btn.dataset.value;
+        if (btn.dataset.value === 'Нет') {
+          showStep('reject');
+        } else {
+          showStep('2-crypto');
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-answer="cryptoExperience"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.answers.cryptoExperience = btn.dataset.value;
+        if (btn.dataset.value === 'Да') {
+          state.answers.vertical = 'Crypto';
+          state.routeAfterStep2 = '2-crypto';
+          showStep('3');
+        } else {
+          state.answers.vertical = '';
+          state.routeAfterStep2 = '2-vertical';
+          showStep('2-vertical');
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-back]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        clearErrors();
+        showStep(btn.dataset.back);
+      });
+    });
+
+    document.getElementById('verticalNextBtn').addEventListener('click', () => {
+      clearErrors();
+      const value = verticalInput.value.trim();
+      if (!validateRequired(value)) {
+        verticalError.classList.add('show');
+        verticalInput.focus();
+        return;
+      }
+      state.answers.vertical = value;
+      showStep('3');
+    });
+
+    document.getElementById('step3BackBtn').addEventListener('click', () => {
+      clearErrors();
+      showStep(state.routeAfterStep2);
+    });
+
+    document.getElementById('positionNextBtn').addEventListener('click', () => {
+      clearErrors();
+      const value = positionInput.value.trim();
+      if (!validateRequired(value)) {
+        positionError.classList.add('show');
+        positionInput.focus();
+        return;
+      }
+      state.answers.position = value;
+      showStep('4');
+    });
+
+    document.getElementById('companyNextBtn').addEventListener('click', () => {
+      clearErrors();
+      const value = companyInput.value.trim();
+      if (!validateRequired(value)) {
+        companyError.classList.add('show');
+        companyInput.focus();
+        return;
+      }
+      state.answers.company = value;
+      showStep('5');
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', async (event) => {
+      clearErrors();
+      const value = telegramInput.value.trim();
+      if (!validateTelegram(value)) {
+        telegramError.classList.add('show');
+        telegramInput.focus();
+        return;
+      }
+
+      state.answers.telegram = value.startsWith('@') || value.startsWith('http') ? value : `@${value}`;
+
+      const button = event.currentTarget;
+      const oldText = button.textContent;
+      button.textContent = 'Отправка...';
+      quizCard.classList.add('sending');
+
+      try {
+        await submitForm();
+        buildAnswersPreview();
+        showStep('success');
+      } catch (error) {
+        alert('Не удалось отправить форму. Проверь webhookUrl в коде или попробуй позже.');
+        console.error(error);
+      } finally {
+        button.textContent = oldText;
+        quizCard.classList.remove('sending');
+      }
+    });
+
+    function resetQuiz() {
+      state.current = '1';
+      state.answers = {
+        experience: '',
+        cryptoExperience: '',
+        vertical: '',
+        position: '',
+        company: '',
+        telegram: ''
+      };
+      state.routeAfterStep2 = '3';
+      verticalInput.value = '';
+      positionInput.value = '';
+      companyInput.value = '';
+      telegramInput.value = '';
+      clearErrors();
+      showStep('1');
+      window.location.hash = '#quiz';
+    }
+
+    document.getElementById('restartRejectBtn').addEventListener('click', resetQuiz);
+    document.getElementById('heroStartBtn').addEventListener('click', () => setTimeout(() => showStep(state.current), 50));
+
+    [verticalInput, positionInput, companyInput, telegramInput].forEach(input => {
+      input.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+
+        if (input === verticalInput && state.current === '2-vertical') document.getElementById('verticalNextBtn').click();
+        if (input === positionInput && state.current === '3') document.getElementById('positionNextBtn').click();
+        if (input === companyInput && state.current === '4') document.getElementById('companyNextBtn').click();
+        if (input === telegramInput && state.current === '5') document.getElementById('submitBtn').click();
+      });
+    });
+
+    showStep('1');
+  </script>
+</body>
+</html>
